@@ -66,15 +66,15 @@ public class SpongePlayerCalculator implements ContextCalculator<Subject> {
     public void calculate(@NonNull Subject subject, @NonNull ContextConsumer consumer) {
         if (subject instanceof Locatable) {
             World<?> world = ((Locatable) subject).getWorld();
-            consumer.accept(DefaultContextKeys.DIMENSION_TYPE_KEY, getCatalogTypeName(world.getDimensionType().getKey()));
+            consumer.accept(DefaultContextKeys.DIMENSION_TYPE_KEY, getContextKey(world.getDimensionType().getKey()));
             if (world instanceof ServerWorld) {
-                this.plugin.getConfiguration().get(ConfigKeys.WORLD_REWRITES).rewriteAndSubmit(getCatalogTypeName(((ServerWorld) world).getKey()), consumer);
+                this.plugin.getConfiguration().get(ConfigKeys.WORLD_REWRITES).rewriteAndSubmit(getContextKey(((ServerWorld) world).getKey()), consumer);
             }
         }
 
         if (subject instanceof ValueContainer) {
             ValueContainer valueContainer = (ValueContainer) subject;
-            valueContainer.get(Keys.GAME_MODE).ifPresent(mode -> consumer.accept(DefaultContextKeys.GAMEMODE_KEY, getCatalogTypeName(mode.getKey())));
+            valueContainer.get(Keys.GAME_MODE).ifPresent(mode -> consumer.accept(DefaultContextKeys.GAMEMODE_KEY, getContextKey(mode.getKey())));
         }
     }
 
@@ -84,14 +84,14 @@ public class SpongePlayerCalculator implements ContextCalculator<Subject> {
         Game game = this.plugin.getBootstrap().getGame();
 
         for (GameMode mode : game.getRegistry().getCatalogRegistry().getAllOf(CatalogTypes.GAME_MODE)) {
-            builder.add(DefaultContextKeys.GAMEMODE_KEY, getCatalogTypeName(mode.getKey()));
+            builder.add(DefaultContextKeys.GAMEMODE_KEY, getContextKey(mode.getKey()));
         }
         for (DimensionType dim : game.getRegistry().getCatalogRegistry().getAllOf(CatalogTypes.DIMENSION_TYPE)) {
-            builder.add(DefaultContextKeys.DIMENSION_TYPE_KEY, getCatalogTypeName(dim.getKey()));
+            builder.add(DefaultContextKeys.DIMENSION_TYPE_KEY, getContextKey(dim.getKey()));
         }
         if (game.isServerAvailable()) {
             for (ServerWorld world : game.getServer().getWorldManager().getWorlds()) {
-                String worldName = getCatalogTypeName(world.getKey());
+                String worldName = getContextKey(world.getKey());
                 if (Context.isValidValue(worldName)) {
                     builder.add(DefaultContextKeys.WORLD_KEY, worldName);
                 }
@@ -101,7 +101,7 @@ public class SpongePlayerCalculator implements ContextCalculator<Subject> {
         return builder.build();
     }
 
-    private static String getCatalogTypeName(ResourceKey key) {
+    private static String getContextKey(ResourceKey key) {
         if (key.getNamespace().equals("minecraft")) {
             return key.getValue();
         }
