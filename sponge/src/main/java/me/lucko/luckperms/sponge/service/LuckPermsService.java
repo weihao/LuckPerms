@@ -39,8 +39,10 @@ import me.lucko.luckperms.sponge.service.model.LPPermissionDescription;
 import me.lucko.luckperms.sponge.service.model.LPPermissionService;
 import me.lucko.luckperms.sponge.service.model.LPSubject;
 import me.lucko.luckperms.sponge.service.model.LPSubjectCollection;
+import me.lucko.luckperms.sponge.service.model.LPSubjectData;
 import me.lucko.luckperms.sponge.service.model.LPSubjectReference;
 import me.lucko.luckperms.sponge.service.model.SimplePermissionDescription;
+import me.lucko.luckperms.sponge.service.model.SubjectDataUpdateEventImpl;
 import me.lucko.luckperms.sponge.service.model.persisted.DefaultsCollection;
 import me.lucko.luckperms.sponge.service.model.persisted.PersistedCollection;
 import me.lucko.luckperms.sponge.service.model.persisted.SubjectStorage;
@@ -49,6 +51,7 @@ import me.lucko.luckperms.sponge.service.reference.SubjectReferenceFactory;
 import net.kyori.adventure.text.Component;
 
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+import org.spongepowered.api.event.permission.SubjectDataUpdateEvent;
 import org.spongepowered.api.service.context.ContextCalculator;
 import org.spongepowered.api.service.permission.PermissionService;
 import org.spongepowered.api.service.permission.Subject;
@@ -228,6 +231,14 @@ public class LuckPermsService implements LPPermissionService {
     public void registerContextCalculator(ContextCalculator<Subject> calculator) {
         Objects.requireNonNull(calculator);
         this.plugin.getContextManager().registerCalculator(new ContextCalculatorProxy(calculator));
+    }
+
+    @Override
+    public void fireUpdateEvent(LPSubjectData subjectData) {
+        this.plugin.getBootstrap().getScheduler().executeAsync(() -> {
+            SubjectDataUpdateEvent event = new SubjectDataUpdateEventImpl(this.plugin, subjectData);
+            this.plugin.getBootstrap().getGame().getEventManager().post(event);
+        });
     }
 
     @Override

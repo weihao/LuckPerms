@@ -31,7 +31,6 @@ import me.lucko.luckperms.sponge.service.LuckPermsService;
 import me.lucko.luckperms.sponge.service.ProxyFactory;
 import me.lucko.luckperms.sponge.service.model.LPProxiedSubject;
 import me.lucko.luckperms.sponge.service.model.LPSubject;
-import me.lucko.luckperms.sponge.service.model.LPSubjectData;
 import me.lucko.luckperms.sponge.service.model.calculated.CalculatedSubject;
 import me.lucko.luckperms.sponge.service.model.calculated.CalculatedSubjectData;
 import me.lucko.luckperms.sponge.service.model.calculated.MonitoredSubjectData;
@@ -84,7 +83,7 @@ public class PersistedSubject extends CalculatedSubject implements LPSubject {
             protected void onUpdate(boolean success) {
                 super.onUpdate(success);
                 if (success) {
-                    fireUpdateEvent(this);
+                    PersistedSubject.this.service.fireUpdateEvent(this);
                 }
             }
         };
@@ -92,21 +91,12 @@ public class PersistedSubject extends CalculatedSubject implements LPSubject {
             @Override
             protected void onUpdate(boolean success) {
                 if (success) {
-                    fireUpdateEvent(this);
+                    PersistedSubject.this.service.fireUpdateEvent(this);
                 }
             }
         };
 
         this.saveBuffer = new SaveBuffer(service.getPlugin());
-    }
-
-    /**
-     * Calls the subject data update event for the given {@link LPSubjectData} instance.
-     *
-     * @param subjectData the subject data
-     */
-    private void fireUpdateEvent(LPSubjectData subjectData) {
-        this.service.getPlugin().getUpdateEventHandler().fireUpdateEvent(subjectData);
     }
 
     /**

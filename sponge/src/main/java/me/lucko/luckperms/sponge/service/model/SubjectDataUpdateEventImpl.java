@@ -23,10 +23,9 @@
  *  SOFTWARE.
  */
 
-package me.lucko.luckperms.sponge.service.events;
+package me.lucko.luckperms.sponge.service.model;
 
 import me.lucko.luckperms.sponge.LPSpongePlugin;
-import me.lucko.luckperms.sponge.service.model.LPSubjectData;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.api.event.Cause;
@@ -36,11 +35,11 @@ import org.spongepowered.api.event.impl.AbstractEvent;
 import org.spongepowered.api.event.permission.SubjectDataUpdateEvent;
 import org.spongepowered.api.service.permission.SubjectData;
 
-public class LPSubjectDataUpdateEvent extends AbstractEvent implements SubjectDataUpdateEvent {
+public class SubjectDataUpdateEventImpl extends AbstractEvent implements SubjectDataUpdateEvent {
     private final LPSpongePlugin plugin;
     private final LPSubjectData subjectData;
 
-    public LPSubjectDataUpdateEvent(LPSpongePlugin plugin, LPSubjectData subjectData) {
+    public SubjectDataUpdateEventImpl(LPSpongePlugin plugin, LPSubjectData subjectData) {
         this.plugin = plugin;
         this.subjectData = subjectData;
     }

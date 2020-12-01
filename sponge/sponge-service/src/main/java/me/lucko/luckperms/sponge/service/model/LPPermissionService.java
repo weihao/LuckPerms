@@ -78,5 +78,7 @@ public interface LPPermissionService {
 
     void registerContextCalculator(ContextCalculator<Subject> calculator);
 
+    void fireUpdateEvent(LPSubjectData subjectData);
+
     void invalidateAllCaches();
 }

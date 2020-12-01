@@ -74,8 +74,8 @@ public abstract class PermissionHolderSubject<T extends PermissionHolder> implem
     }
 
     public void fireUpdateEvent() {
-        this.plugin.getUpdateEventHandler().fireUpdateEvent(this.subjectData);
-        this.plugin.getUpdateEventHandler().fireUpdateEvent(this.transientSubjectData);
+        this.plugin.getService().fireUpdateEvent(this.subjectData);
+        this.plugin.getService().fireUpdateEvent(this.transientSubjectData);
     }
 
     public T getParent() {

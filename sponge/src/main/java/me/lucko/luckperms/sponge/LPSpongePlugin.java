@@ -28,6 +28,7 @@ package me.lucko.luckperms.sponge;
 import me.lucko.luckperms.common.api.LuckPermsApiProvider;
 import me.lucko.luckperms.common.calculator.CalculatorFactory;
 import me.lucko.luckperms.common.command.access.CommandPermission;
+import me.lucko.luckperms.common.config.ConfigKeys;
 import me.lucko.luckperms.common.config.generic.adapter.ConfigurationAdapter;
 import me.lucko.luckperms.common.dependencies.Dependency;
 import me.lucko.luckperms.common.event.AbstractEventBus;
@@ -45,13 +46,13 @@ import me.lucko.luckperms.sponge.calculator.SpongeCalculatorFactory;
 import me.lucko.luckperms.sponge.commands.SpongeParentCommand;
 import me.lucko.luckperms.sponge.context.SpongeContextManager;
 import me.lucko.luckperms.sponge.context.SpongePlayerCalculator;
+import me.lucko.luckperms.sponge.listeners.SpongeCommandListUpdater;
 import me.lucko.luckperms.sponge.listeners.SpongeConnectionListener;
 import me.lucko.luckperms.sponge.listeners.SpongePlatformListener;
 import me.lucko.luckperms.sponge.messaging.SpongeMessagingFactory;
 import me.lucko.luckperms.sponge.model.manager.SpongeGroupManager;
 import me.lucko.luckperms.sponge.model.manager.SpongeUserManager;
 import me.lucko.luckperms.sponge.service.LuckPermsService;
-import me.lucko.luckperms.sponge.service.events.UpdateEventHandler;
 import me.lucko.luckperms.sponge.service.model.LPSubjectCollection;
 import me.lucko.luckperms.sponge.service.model.persisted.PersistedCollection;
 import me.lucko.luckperms.sponge.tasks.ServiceCacheHousekeepingTask;
@@ -93,7 +94,6 @@ public class LPSpongePlugin extends AbstractLuckPermsPlugin {
     private StandardTrackManager trackManager;
     private SpongeContextManager contextManager;
     private LuckPermsService service;
-    private UpdateEventHandler updateEventHandler;
 
     public LPSpongePlugin(LPSpongeBootstrap bootstrap) {
         this.bootstrap = bootstrap;
@@ -184,7 +184,6 @@ public class LPSpongePlugin extends AbstractLuckPermsPlugin {
 
     @Override
     protected void setupPlatformHooks() {
-        this.updateEventHandler = UpdateEventHandler.obtain(this);
         this.service = new LuckPermsService(this);
 
         //PermissionService oldService = this.bootstrap.getGame().getServiceManager().provide(PermissionService.class).orElse(null);
@@ -251,6 +250,11 @@ public class LPSpongePlugin extends AbstractLuckPermsPlugin {
         // register permissions
         for (CommandPermission perm : CommandPermission.values()) {
             this.service.registerPermissionDescription(perm.getPermission(), null, this.bootstrap.getPluginContainer());
+        }
+
+        // register sponge command list updater
+        if (getConfiguration().get(ConfigKeys.UPDATE_CLIENT_COMMAND_LIST)) {
+            getApiProvider().getEventBus().subscribe(new SpongeCommandListUpdater(this));
         }
     }
 
@@ -350,10 +354,6 @@ public class LPSpongePlugin extends AbstractLuckPermsPlugin {
 
     public LuckPermsService getService() {
         return this.service;
-    }
-
-    public UpdateEventHandler getUpdateEventHandler() {
-        return this.updateEventHandler;
     }
 
 }
