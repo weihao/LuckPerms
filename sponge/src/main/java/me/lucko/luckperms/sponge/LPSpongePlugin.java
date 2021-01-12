@@ -32,6 +32,7 @@ import me.lucko.luckperms.common.config.ConfigKeys;
 import me.lucko.luckperms.common.config.generic.adapter.ConfigurationAdapter;
 import me.lucko.luckperms.common.dependencies.Dependency;
 import me.lucko.luckperms.common.event.AbstractEventBus;
+import me.lucko.luckperms.common.locale.TranslationManager;
 import me.lucko.luckperms.common.messaging.MessagingFactory;
 import me.lucko.luckperms.common.model.User;
 import me.lucko.luckperms.common.model.manager.track.StandardTrackManager;
@@ -305,7 +306,7 @@ public class LPSpongePlugin extends AbstractLuckPermsPlugin {
             return new DummySender(this, Sender.CONSOLE_UUID, Sender.CONSOLE_NAME) {
                 @Override
                 public void sendMessage(Component message) {
-                    for (Component line : AbstractSender.splitNewlines(message)) {
+                    for (Component line : AbstractSender.splitNewlines(TranslationManager.render(message))) {
                         LPSpongePlugin.this.bootstrap.getPluginLogger().info(PlainComponentSerializer.plain().serialize(line));
                     }
                 }
