@@ -29,9 +29,9 @@ import com.google.inject.Inject;
 
 import me.lucko.luckperms.common.dependencies.classloader.PluginClassLoader;
 import me.lucko.luckperms.common.plugin.bootstrap.LuckPermsBootstrap;
+import me.lucko.luckperms.common.plugin.logging.Log4jPluginLogger;
 import me.lucko.luckperms.common.plugin.logging.PluginLogger;
 import me.lucko.luckperms.common.util.MoreFiles;
-import me.lucko.luckperms.sponge.util.Log4jPluginLogger;
 import me.lucko.luckperms.sponge.util.SpongeClassLoader;
 
 import net.luckperms.api.platform.Platform;
